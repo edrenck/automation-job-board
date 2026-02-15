@@ -1,10 +1,13 @@
 version: '3.8'
 
+networks:
+  db-network:
+    driver: bridge
+
 services:
   db:
     image: postgres:15
     container_name: aitb_postgres
-    network_mode: host
     environment:
       POSTGRES_USER: aitb
       POSTGRES_PASSWORD: aitb_dev_password
@@ -16,6 +19,10 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    ports:
+      - "5432:5432"
+    networks:
+      - db-network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -27,6 +34,8 @@ services:
       - "5050:80"
     depends_on:
       - db
+    networks:
+      - db-network
 
 volumes:
   postgres_data:
